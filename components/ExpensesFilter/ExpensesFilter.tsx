@@ -17,7 +17,7 @@ type ExpensesFilterProps = {
   className?: string;
   fetchExpenses: (_: ExpensesFilterParams) => void;
   phone: string | undefined;
-  disabled: boolean;
+  disabled?: boolean;
 };
 
 export default function ExpensesFilter(props: ExpensesFilterProps) {
@@ -44,7 +44,7 @@ export default function ExpensesFilter(props: ExpensesFilterProps) {
           name="startDate"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel className="pb-1">Start date</FormLabel>
+              <FormLabel className="pb-1">Data inicial</FormLabel>
               <FormControl>
                 <DatePicker
                   date={field.value}
@@ -62,7 +62,7 @@ export default function ExpensesFilter(props: ExpensesFilterProps) {
           name="endDate"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>End date</FormLabel>
+              <FormLabel>Data final</FormLabel>
               <FormControl>
                 <DatePicker
                   date={field.value}
@@ -76,7 +76,7 @@ export default function ExpensesFilter(props: ExpensesFilterProps) {
         />
 
         <Button variant="outline" type="submit" disabled={props.disabled}>
-          submit
+          filtrar
         </Button>
       </form>
     </Form>

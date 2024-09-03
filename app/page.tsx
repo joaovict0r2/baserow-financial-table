@@ -39,10 +39,15 @@ export default function Home({ searchParams }: PageProps) {
   }, []);
 
   async function fetchExpenses(params: any) {
-    const { results } = await getExpenses(params);
-    setExpenses(results);
-
-    setIsLoading(!isLoading);
+    try {
+      const { results } = await getExpenses(params);
+      setExpenses(results);
+    } catch (error) {
+      console.log(error)
+      setExpenses([]);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -52,18 +57,17 @@ export default function Home({ searchParams }: PageProps) {
           className="mb-12"
           fetchExpenses={fetchExpenses}
           phone={searchParams?.phone}
-          disabled={!expenses?.length}
         />
 
         {expenses?.length ? (
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Description</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead className="w-[180px]">Phone</TableHead>
-                <TableHead className="w-[50px] text-right">Amount</TableHead>
+                <TableHead>Descrição</TableHead>
+                <TableHead>Categoria</TableHead>
+                <TableHead>Data</TableHead>
+                <TableHead className="w-[180px]">Telefone</TableHead>
+                <TableHead className="w-[50px] text-right">Valor</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -75,7 +79,12 @@ export default function Home({ searchParams }: PageProps) {
                   <TableCell>{expense.category}</TableCell>
                   <TableCell>{convertDateToGMT3(expense.created_on)}</TableCell>
                   <TableCell>{phoneMask(expense.user_id)}</TableCell>
-                  <TableCell className="text-right">{expense.amount}</TableCell>
+                  <TableCell className="text-right">
+                    {new Intl.NumberFormat('pt-BR', {
+                      style: 'currency',
+                      currency: 'BRL'
+                    }).format(+expense.amount) }
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -83,11 +92,11 @@ export default function Home({ searchParams }: PageProps) {
         ) : undefined}
 
         {!expenses?.length && isLoading ? (
-          <h3 className="text-center">Loading...</h3>
+          <h3 className="text-center">Carregando...</h3>
         ) : undefined}
 
         {!expenses?.length && !isLoading ? (
-          <h3 className="text-center">Expenses not found</h3>
+          <h3 className="text-center">Despesas não encontradas.</h3>
         ) : undefined}
       </section>
     </main>
