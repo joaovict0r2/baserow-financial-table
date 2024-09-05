@@ -1,5 +1,6 @@
 "use client";
 
+import { ExpensesFilterParams } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -9,9 +10,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { DatePicker } from "../DatePicker/DatePicker";
+import { CircleBackslashIcon } from "@radix-ui/react-icons";
+import { MouseEvent } from "react";
 import { useForm } from "react-hook-form";
-import { ExpensesFilterParams } from "@/app/actions";
+import { DatePicker } from "../DatePicker/DatePicker";
 
 type ExpensesFilterProps = {
   className?: string;
@@ -31,6 +33,16 @@ export default function ExpensesFilter(props: ExpensesFilterProps) {
   function onSubmit() {
     const formData = form.getValues();
     props.fetchExpenses({ ...formData, phone: props.phone });
+  }
+
+  function clear(event: MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    form.reset();
+  }
+
+  function isFormFilled() {
+    const fields = form.watch()
+    return fields.endDate !== undefined || fields.startDate !== undefined
   }
 
   return (
@@ -75,8 +87,12 @@ export default function ExpensesFilter(props: ExpensesFilterProps) {
           )}
         />
 
-        <Button variant="outline" type="submit" disabled={props.disabled}>
+        <Button type="submit" variant="outline" disabled={props.disabled}>
           filtrar
+        </Button>
+
+        <Button variant="outline" onClick={clear} disabled={!isFormFilled()}>
+          <CircleBackslashIcon className="h-4 w-4" />
         </Button>
       </form>
     </Form>
